@@ -24,9 +24,11 @@ app.set("views", path.join(__dirname, "../views"));
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", blogController.homePage);
+app.get("/article/:id", blogController.singleArticle);
 
 app.use((req, res, next) => {
-  res.status(404).send("Not Found!");
+  res.statusCode = 404;
+  res.render("404");
 });
 
 createServer(options, app).listen(PORT, () =>

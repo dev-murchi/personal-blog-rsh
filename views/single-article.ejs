@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    <%= article.title %>
+  </title>
+  <link rel="stylesheet" href="/css/single-article.css">
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>
+        <%= article.title%>
+      </h1>
+      <p class="meta-info">Written by <span class="author">
+          <%= article.author %>
+        </span> | Published on: <%= article.publishDate %>
+      </p>
+    </header>
+    <div class="article-body">
+      <%- article.content %>
+    </div>
+  </div>
+</body>
+
+</html>
