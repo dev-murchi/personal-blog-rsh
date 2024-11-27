@@ -1,0 +1,42 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  padding: 20px;
+}
+
+.container {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.blog-item {
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+  margin-bottom: 20px;
+}
+
+.blog-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.blog-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.blog-date {
+  font-size: 14px;
+  color: #777;
+}
+
+a {
+  text-decoration: none;
+}
+
+.blog-title a {
+  color: #333;
+}

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personal Blog</title>
+  <link rel="stylesheet" href="/css/home.css">
+</head>
+
+<body>
+  <div class="container">
+    <h1>Personal Blog</h1>
+    <% articles.forEach((article)=> {%>
+      <div class="blog-item">
+        <div class="blog-title">
+          <a href="/article/<%= article.id %>">
+            <%= article.title %>
+          </a>
+        </div>
+        <div class="blog-date">Published on: <%= article.publishDate %>
+        </div>
+      </div>
+      <% });%>
+  </div>
+</body>
+
+</html>
