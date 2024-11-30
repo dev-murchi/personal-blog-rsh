@@ -7,7 +7,7 @@
   <title>
     <%= article.title %>
   </title>
-  <link rel="stylesheet" href="/css/single-article.css">
+  <link rel="stylesheet" href="/css/article-detail.css">
 </head>
 
 <body>
@@ -24,6 +24,11 @@
     <div class="article-body">
       <%- article.content %>
     </div>
+    <% if(admin===true) {%>
+      <!-- Edit Button (Link to Edit Page) -->
+      <a href="/article/<%= article.id%>/edit" class="edit-button">Edit Article</a>
+      <a href="/article/<%= article.id%>/delete" class="edit-button">Delete Article</a>
+      <% } %>
   </div>
 </body>
 
