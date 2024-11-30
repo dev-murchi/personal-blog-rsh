@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import * as articleService from "../service/article.service";
 import { Article } from "../models/article";
-
+const regexOnlyNumber = /^[0-9]+$/;
 export function homePage(req: Request, res: Response, next: NextFunction) {
   const articles = articleService.getArticles().map((article: any) => {
     return {
@@ -13,11 +13,10 @@ export function homePage(req: Request, res: Response, next: NextFunction) {
 }
 
 export function articlePage(req: Request, res: Response, next: NextFunction) {
-  const id = parseInt(req.params["id"]);
-  if (isNaN(id)) {
+  if (!regexOnlyNumber.test(req.params["id"])) {
     return res.status(404).render("404");
   }
-  const article = articleService.getArticleById(id);
+  const article = articleService.getArticleById(parseInt(req.params["id"]));
 
   if (!article) {
     return res.status(404).render("404");
@@ -44,7 +43,7 @@ export function articleCreatePage(
   res.render("article-form", {
     title: "Create Article",
     article,
-    error: "",
+    error: undefined,
   });
 }
 
@@ -53,11 +52,10 @@ export function articleEditPage(
   res: Response,
   next: NextFunction
 ) {
-  const id = parseInt(req.params["id"]);
-  if (isNaN(id)) {
+  if (!regexOnlyNumber.test(req.params["id"])) {
     return res.status(404).render("404");
   }
-  const article = articleService.getArticleById(id);
+  const article = articleService.getArticleById(parseInt(req.params["id"]));
   if (!article) {
     return res.status(404).render("404");
   }
@@ -65,6 +63,6 @@ export function articleEditPage(
   res.render("article-form", {
     title: "Edit Article",
     article,
-    error: "",
+    error: undefined,
   });
 }
