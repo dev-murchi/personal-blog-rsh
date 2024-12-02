@@ -10,7 +10,7 @@
 
 <body>
   <div class="container">
-    <form id="loginForm">
+    <form id="loginForm" method="post">
       <div class="form-group">
         <label for="username">Username</label>
         <input type="text" id="username" name="username" value="" required>
@@ -23,7 +23,11 @@
         <button type="submit">Submit</button>
       </div>
     </form>
-    <div class="text-small form-alert">There was an error</div>
+    <% if(error !==undefined ) {%>
+      <p style="color:red">
+        <%= error %>
+      </p>
+      <% }%>
   </div>
 </body>
 

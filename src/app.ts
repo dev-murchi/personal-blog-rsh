@@ -3,8 +3,13 @@ import express from "express";
 import { readFileSync } from "node:fs";
 import { createServer } from "node:https";
 import path from "node:path";
-import * as pageController from "./controller/page.controller";
-import * as blogController from "./controller/blog.controller";
+
+import { indexRouter } from "./router/index.router";
+import { adminRouter } from "./router/admin.router";
+import { articleRouter } from "./router/article.router";
+import { loginRouter } from "./router/login.router";
+import { notFound } from "./middleware/not-found.middleware";
+import { errorHandler } from "./middleware/error-handler.middleware";
 
 if (!process.env.SSL_KEY || !process.env.SSL_CERT) {
   console.error("Missing Certificates");
@@ -25,19 +30,13 @@ app.set("views", path.join(__dirname, "../views"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get("/", pageController.homePage);
-app.get("/article/:id", pageController.articlePage);
-app.get("/admin", pageController.adminPage);
-app.get("/login", pageController.loginPage);
-app.get("/new", pageController.articleCreatePage);
-app.post("/new", blogController.createArticle);
-app.get("/article/:id/edit", pageController.articleEditPage);
-app.post("/article/:id/edit", blogController.updateArticle);
+app.use("/", indexRouter);
+app.use("/admin", adminRouter);
+app.use("/article", articleRouter);
+app.use("/login", loginRouter);
 
-app.use((req, res, next) => {
-  res.statusCode = 404;
-  res.render("404");
-});
+app.use(notFound);
+app.use(errorHandler);
 
 createServer(options, app).listen(PORT, () =>
   console.log(`Listening on port: ${PORT}`)
