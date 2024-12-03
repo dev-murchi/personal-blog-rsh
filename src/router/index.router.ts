@@ -1,6 +1,6 @@
 import express from "express";
-import * as pageController from "../controller/page.controller";
+import { pageController } from "../controller/page.controller";
 
 export const indexRouter = express.Router();
 
-indexRouter.route("/").get(pageController.homePage);
+indexRouter.route("/").get(pageController.home);

@@ -1,6 +1,6 @@
 import express from "express";
-import * as pageController from "../controller/page.controller";
+import { pageController } from "../controller/page.controller";
 
 export const adminRouter = express.Router();
 
-adminRouter.route("/").get(pageController.adminPage);
+adminRouter.route("/").get(pageController.admin);
