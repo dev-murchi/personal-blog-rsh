@@ -8,8 +8,8 @@ articleRouter
   .route("/new")
   .get(pageController.articleCreatePage)
   .post(blogController.createArticle);
-articleRouter.route("/:id").get(pageController.articlePage);
 articleRouter
-  .route("/:id/edit")
+  .route("/edit")
   .get(pageController.articleEditPage)
   .post(blogController.updateArticle);
+articleRouter.route("/:slug").get(pageController.articlePage);

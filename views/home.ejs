@@ -14,11 +14,11 @@
     <% articles.forEach((article)=> {%>
       <div class="blog-item">
         <div class="blog-title">
-          <a href="/article/<%= article.id %>">
+          <a href="/article/<%= article.slug %>">
             <%= article.title %>
           </a>
         </div>
-        <div class="blog-date">Published on: <%= article.publishDate %>
+        <div class="blog-date">Published on: <%= article.date %>
         </div>
       </div>
       <% });%>

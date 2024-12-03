@@ -5,10 +5,10 @@ import { CustomError } from "../models/custom-error";
 const regexOnlyNumber = /^[0-9]+$/;
 export function homePage(req: Request, res: Response, next: NextFunction) {
   try {
-    const articles = articleService.getArticles().map((article: any) => {
+    const articles = articleService.getArticles().map((article) => {
       return {
         ...article,
-        publishDate: new Date(article.publishDate).toDateString(),
+        date: new Date(article.date).toDateString(),
       };
     });
     res.render("home", { articles });
@@ -19,16 +19,17 @@ export function homePage(req: Request, res: Response, next: NextFunction) {
 
 export function articlePage(req: Request, res: Response, next: NextFunction) {
   try {
-    if (!regexOnlyNumber.test(req.params["id"])) {
+    const { slug } = req.params;
+    if (!slug) {
       throw new CustomError("Article is not found!", 404);
     }
-    const article = articleService.getArticleById(parseInt(req.params["id"]));
+    const article = articleService.getArticle(slug);
 
     if (!article) {
-      throw new CustomError("Article not found!", 404);
+      throw new CustomError("Article is not found!", 404);
     }
 
-    article.publishDate = new Date(article.publishDate).toDateString();
+    article.date = new Date(article.date).toDateString();
     res.render("article-detail", { article: article, admin: false });
   } catch (error) {
     next(error);
@@ -57,14 +58,17 @@ export function articleCreatePage(
   next: NextFunction
 ) {
   try {
-    const article = new Article();
+    const article: Partial<Article> = {
+      title: "",
+      content: "",
+    };
     res.render("article-form", {
       title: "Create Article",
       article,
       error: undefined,
     });
   } catch (error) {
-    next(error);
+    next("error");
   }
 }
 
@@ -74,10 +78,12 @@ export function articleEditPage(
   next: NextFunction
 ) {
   try {
-    if (!regexOnlyNumber.test(req.params["id"])) {
-      throw new CustomError("Article is not found!", 404);
+    const id = req.query["id"] as string;
+    if (!regexOnlyNumber.test(id)) {
+      throw new CustomError("Article is not foundx!", 404);
     }
-    const article = articleService.getArticleById(parseInt(req.params["id"]));
+
+    const article = articleService.getArticleById(parseInt(id));
     if (!article) {
       throw new CustomError("Article is not found!", 404);
     }

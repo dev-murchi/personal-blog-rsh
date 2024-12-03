@@ -18,7 +18,7 @@
       </h1>
       <p class="meta-info">Written by <span class="author">
           <%= article.author %>
-        </span> | Published on: <%= article.publishDate %>
+        </span> | Published on: <%= article.date %>
       </p>
     </header>
     <div class="article-body">
@@ -26,8 +26,8 @@
     </div>
     <% if(admin===true) {%>
       <!-- Edit Button (Link to Edit Page) -->
-      <a href="/article/<%= article.id%>/edit" class="edit-button">Edit Article</a>
-      <a href="/article/<%= article.id%>/delete" class="edit-button">Delete Article</a>
+      <a href="/article/<%= article.slug%>/edit" class="edit-button">Edit Article</a>
+      <a href="/article/<%= article.slug%>/delete" class="edit-button">Delete Article</a>
       <% } %>
   </div>
 </body>
