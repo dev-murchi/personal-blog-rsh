@@ -7,7 +7,7 @@ import path from "node:path";
 import { indexRouter } from "./router/index.router";
 import { adminRouter } from "./router/admin.router";
 import { articleRouter } from "./router/article.router";
-import { loginRouter } from "./router/login.router";
+import { authRouter } from "./router/auth.router";
 import { notFound } from "./middleware/not-found.middleware";
 import { errorHandler } from "./middleware/error-handler.middleware";
 
@@ -33,7 +33,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/", indexRouter);
 app.use("/admin", adminRouter);
 app.use("/article", articleRouter);
-app.use("/login", loginRouter);
+app.use("/auth", authRouter);
 
 app.use(notFound);
 app.use(errorHandler);

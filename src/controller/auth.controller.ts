@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { userService } from "../service/user.service";
-export class SignInControler {
-  async login(req: Request, res: Response, next: NextFunction) {
+export class AuthControler {
+  async register(req: Request, res: Response, next: NextFunction) {
     try {
       const { username, password, email } = req.body;
       if (!username || !password || !email) {
@@ -28,7 +28,7 @@ export class SignInControler {
 
         console.log({ user: user[0] });
 
-        res.redirect("/admin");
+        res.redirect("/login");
       }
     } catch (error) {
       next(error);
@@ -36,4 +36,4 @@ export class SignInControler {
   }
 }
 
-export const signInControler = new SignInControler();
+export const authControler = new AuthControler();

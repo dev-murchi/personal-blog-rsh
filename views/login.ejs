@@ -24,7 +24,9 @@
         <input type="password" id="password" name="password" value="" required>
       </div>
       <div class="form-group">
-        <button type="submit">Submit</button>
+        <button type="submit">
+          <%= page==='login' ? 'Login' : 'Sign up' %>
+        </button>
       </div>
     </form>
     <% if(error !==undefined ) {%>

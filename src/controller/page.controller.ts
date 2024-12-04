@@ -48,7 +48,14 @@ class PageController {
 
   login(req: Request, res: Response, next: NextFunction) {
     try {
-      res.render("login", { error: undefined });
+      res.render("login", { error: undefined, page: "login" });
+    } catch (error) {
+      next(error);
+    }
+  }
+  register(req: Request, res: Response, next: NextFunction) {
+    try {
+      res.render("login", { error: undefined, page: "register" });
     } catch (error) {
       next(error);
     }
