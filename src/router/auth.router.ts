@@ -5,7 +5,7 @@ import { authControler } from "../controller/auth.controller";
 
 export const authRouter = express.Router();
 
-authRouter.route("/login").get(pageController.login);
+authRouter.route("/login").get(pageController.login).post(authControler.login);
 authRouter
   .route("/register")
   .get(pageController.register)
