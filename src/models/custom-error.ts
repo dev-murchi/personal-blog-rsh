@@ -5,3 +5,9 @@ export class CustomError extends Error {
     this.statusCode = statusCode;
   }
 }
+
+export class CustomDatabaseError extends Error {
+  constructor(message: string) {
+    super(message);
+  }
+}
