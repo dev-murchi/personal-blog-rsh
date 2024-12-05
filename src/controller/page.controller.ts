@@ -81,7 +81,7 @@ class PageController {
     try {
       const id = req.query["id"] as string;
       if (!regexOnlyNumber.test(id)) {
-        throw new CustomError("Article is not foundx!", 404);
+        throw new CustomError("Article is not found!", 404);
       }
 
       const article = articleService.getArticleById(parseInt(id));

@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { userService } from "../service/user.service";
+import * as jwt from "jsonwebtoken";
 export class AuthControler {
   async register(req: Request, res: Response, next: NextFunction) {
     try {
@@ -19,16 +20,18 @@ export class AuthControler {
           });
         }
 
+        const userCount = await userService.countUsers();
+        const role = userCount === 0 ? "admin" : "user";
         const user = await userService.saveUser({
           username,
           email,
           password,
-          role: "user",
+          role,
           createdAt: new Date().toString(),
           updatedAt: new Date().toString(),
         });
 
-        res.redirect("/auth/login");
+        res.redirect("/user/login");
       }
     } catch (error) {
       next(error);
@@ -40,7 +43,7 @@ export class AuthControler {
       const { email, password } = req.body;
       if (!email || !password) {
         res.status(400).render("login", {
-          error: "Please provide valid credentials!",
+          error: "Invalid credentials!",
           page: "login",
         });
       } else {
@@ -52,7 +55,19 @@ export class AuthControler {
             .render("login", { error: "Invalid credentials!", page: "login" });
         }
 
-        res.redirect("/admin");
+        const token = jwt.sign({ email }, process.env.JWT_SECRET!);
+        res.cookie("mt", token, {
+          httpOnly: true,
+          secure: true,
+          expires: new Date(new Date().getTime() + 1 * 60 * 60 * 1000), // one day
+          signed: true,
+        });
+
+        if (userExist[0].role === "admin") {
+          res.redirect("/admin");
+        } else {
+          res.redirect("/");
+        }
       }
     } catch (error) {
       next(error);

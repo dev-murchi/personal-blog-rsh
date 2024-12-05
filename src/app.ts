@@ -10,8 +10,9 @@ import { articleRouter } from "./router/article.router";
 import { authRouter } from "./router/auth.router";
 import { notFound } from "./middleware/not-found.middleware";
 import { errorHandler } from "./middleware/error-handler.middleware";
+import cookieParser from "cookie-parser";
 
-if (!process.env.SSL_KEY || !process.env.SSL_CERT) {
+if (!process.env.SSL_KEY || !process.env.SSL_CERT || !process.env.JWT_SECRET) {
   console.error("Missing Certificates");
   process.exit(1);
 }
@@ -29,11 +30,12 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "../views"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser(process.env.JWT_SECRET));
 
 app.use("/", indexRouter);
 app.use("/admin", adminRouter);
 app.use("/article", articleRouter);
-app.use("/auth", authRouter);
+app.use("/user", authRouter);
 
 app.use(notFound);
 app.use(errorHandler);

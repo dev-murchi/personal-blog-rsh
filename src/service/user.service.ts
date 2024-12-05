@@ -27,7 +27,7 @@ class UserService {
   async saveUser(user: User): Promise<User[]> {
     try {
       if (this._db === null) {
-        throw new CustomError("", 1);
+        throw new CustomError("Could not connected to DB", 500);
       }
       await this._db.connect();
       const text = `INSERT INTO ${process.env.DB_TUSER} (
@@ -140,6 +140,27 @@ class UserService {
       });
       await this._db.disconnect();
       return result.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async countUsers(): Promise<number> {
+    try {
+      if (this._db === null) {
+        throw new CustomError("Could not connected to DB", 500);
+      }
+
+      await this._db.connect();
+      const text = `SELECT COUNT(${process.env.DB_TUSER_MAIL}) FROM ${process.env.DB_TUSER};`;
+      const result = await this._db.query<{ count: string }>({
+        text: text.trim(),
+        values: [],
+      });
+
+      let count = parseInt(result.data[0].count);
+      await this._db.disconnect();
+      return count;
     } catch (error) {
       throw error;
     }
