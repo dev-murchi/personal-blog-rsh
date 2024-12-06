@@ -12,23 +12,32 @@
 
 <body>
   <div class="container">
-    <header>
-      <h1>
-        <%= article.title%>
-      </h1>
-      <p class="meta-info">Written by <span class="author">
-          <%= article.author %>
-        </span> | Published on: <%= article.date %>
-      </p>
+    <header class="header">
+      <nav class="navbar">
+        <h1>Personal Blog</h1>
+      </nav>
     </header>
-    <div class="article-body">
-      <%- article.content %>
-    </div>
-    <% if(admin===true) {%>
-      <!-- Edit Button (Link to Edit Page) -->
-      <a href="/article/<%= article.slug%>/edit" class="edit-button">Edit Article</a>
-      <a href="/article/<%= article.slug%>/delete" class="edit-button">Delete Article</a>
-      <% } %>
+    <main class="main">
+      <section id="article-header">
+        <h2>
+          <%= article.title %>
+        </h2>
+        <p class="meta-info">Written by <span class="author">
+            <%= article.author %>
+          </span> | Published on: <%= article.date %>
+        </p>
+      </section>
+      <sectionß class="article-body" id="article-body">
+        <%- article.content %>
+      </sectionß>
+
+      <% if(admin===true) {%>
+        <!-- Edit Button (Link to Edit Page) -->
+        <a href="/article/<%= article.slug%>/edit" class="edit-button">Edit Article</a>
+        <a href="/article/<%= article.slug%>/delete" class="edit-button">Delete Article</a>
+        <% } %>
+    </main>
+    <footer class="footer"></footer>
   </div>
 </body>
 

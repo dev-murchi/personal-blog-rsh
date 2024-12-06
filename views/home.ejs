@@ -10,18 +10,25 @@
 
 <body>
   <div class="container">
-    <h1>Personal Blog</h1>
-    <% articles.forEach((article)=> {%>
-      <div class="blog-item">
-        <div class="blog-title">
-          <a href="/article/<%= article.slug %>">
-            <%= article.title %>
-          </a>
+    <header class="header">
+      <nav class="navbar">
+        <h1 id="page-title">Personal Blog</h1>
+      </nav>
+    </header>
+    <main class="main">
+      <% articles.forEach((article)=> {%>
+        <div class="blog-item">
+          <div class="blog-title">
+            <a href="/article/<%= article.slug %>">
+              <%= article.title %>
+            </a>
+          </div>
+          <div class="blog-date">Published on: <%= article.date %>
+          </div>
         </div>
-        <div class="blog-date">Published on: <%= article.date %>
-        </div>
-      </div>
-      <% });%>
+        <% });%>
+    </main>
+    <footer class="footer"></footer>
   </div>
 </body>
 
