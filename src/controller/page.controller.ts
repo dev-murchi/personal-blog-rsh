@@ -1,13 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import * as articleService from "../service/article.service";
-import { Article } from "../models/article";
+import { articleService } from "../service/article.service";
 import { CustomError } from "../models/custom-error";
-const regexOnlyNumber = /^[0-9]+$/;
 
 class PageController {
-  home(req: Request, res: Response, next: NextFunction) {
+  async home(req: Request, res: Response, next: NextFunction) {
     try {
-      const articles = articleService.getArticles().map((article) => {
+      const articles = (await articleService.getArticles()).map((article) => {
         return {
           ...article,
           date: new Date(article.date).toDateString(),
@@ -19,26 +17,24 @@ class PageController {
     }
   }
 
-  article(req: Request, res: Response, next: NextFunction) {
+  async article(req: Request, res: Response, next: NextFunction) {
     try {
       const { slug } = req.params;
       if (!slug) {
         throw new CustomError("Article is not found!", 404);
       }
-      const article = articleService.getArticle(slug);
-
-      if (!article) {
+      const article = await articleService.getArticle(slug);
+      if (article.length === 0) {
         throw new CustomError("Article is not found!", 404);
       }
-
-      article.date = new Date(article.date).toDateString();
-      res.render("article-detail", { article: article, admin: false });
+      article[0].date = new Date(article[0].date).toDateString();
+      res.render("article-detail", { article: article[0], admin: false });
     } catch (error) {
       next(error);
     }
   }
 
-  admin(req: Request, res: Response, next: NextFunction) {
+  async admin(req: Request, res: Response, next: NextFunction) {
     try {
       res.render("admin");
     } catch (error) {
@@ -46,14 +42,15 @@ class PageController {
     }
   }
 
-  login(req: Request, res: Response, next: NextFunction) {
+  async login(req: Request, res: Response, next: NextFunction) {
     try {
       res.render("login", { error: undefined, page: "login" });
     } catch (error) {
       next(error);
     }
   }
-  register(req: Request, res: Response, next: NextFunction) {
+
+  async register(req: Request, res: Response, next: NextFunction) {
     try {
       res.render("login", { error: undefined, page: "register" });
     } catch (error) {
@@ -61,37 +58,34 @@ class PageController {
     }
   }
 
-  articleCreate(req: Request, res: Response, next: NextFunction) {
+  async articleCreate(req: Request, res: Response, next: NextFunction) {
     try {
-      const article: Partial<Article> = {
-        title: "",
-        content: "",
-      };
       res.render("article-form", {
-        title: "Create Article",
-        article,
+        title: undefined,
+        content: undefined,
         error: undefined,
       });
     } catch (error) {
-      next("error");
+      next(error);
     }
   }
 
-  articleEdit(req: Request, res: Response, next: NextFunction) {
+  async articleEdit(req: Request, res: Response, next: NextFunction) {
+    const { slug } = req.params;
     try {
-      const id = req.query["id"] as string;
-      if (!regexOnlyNumber.test(id)) {
+      if (!slug || !slug.trim()) {
         throw new CustomError("Article is not found!", 404);
       }
 
-      const article = articleService.getArticleById(parseInt(id));
-      if (!article) {
+      const article = await articleService.getArticle(slug);
+
+      if (article.length === 0) {
         throw new CustomError("Article is not found!", 404);
       }
 
       res.render("article-form", {
-        title: "Edit Article",
-        article,
+        title: article[0].title,
+        content: article[0].content,
         error: undefined,
       });
     } catch (error) {

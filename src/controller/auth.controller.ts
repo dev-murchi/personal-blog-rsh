@@ -6,33 +6,33 @@ export class AuthControler {
     try {
       const { username, password, email } = req.body;
       if (!username || !password || !email) {
-        res.status(400).render("login", {
+        return res.status(400).render("login", {
           error: "Please provide valid credentials!",
           page: "register",
         });
-      } else {
-        const userExist = await userService.findUser(email);
-
-        if (userExist.length === 1) {
-          return res.status(400).render("login", {
-            error: "User already registered!",
-            page: "register",
-          });
-        }
-
-        const userCount = await userService.countUsers();
-        const role = userCount === 0 ? "admin" : "user";
-        const user = await userService.saveUser({
-          username,
-          email,
-          password,
-          role,
-          createdAt: new Date().toString(),
-          updatedAt: new Date().toString(),
-        });
-
-        res.redirect("/user/login");
       }
+
+      const userExist = await userService.findUser(email);
+
+      if (userExist.length === 1) {
+        return res.status(400).render("login", {
+          error: "User already registered!",
+          page: "register",
+        });
+      }
+
+      const userCount = await userService.countUsers();
+      const role = userCount === 0 ? "admin" : "user";
+      const user = await userService.saveUser({
+        username,
+        email,
+        password,
+        role,
+        createdAt: new Date().toString(),
+        updatedAt: new Date().toString(),
+      });
+
+      res.redirect("/user/login");
     } catch (error) {
       next(error);
     }
@@ -42,32 +42,31 @@ export class AuthControler {
     try {
       const { email, password } = req.body;
       if (!email || !password) {
-        res.status(400).render("login", {
+        return res.status(400).render("login", {
           error: "Invalid credentials!",
           page: "login",
         });
+      }
+      const userExist = await userService.findUser(email);
+
+      if (userExist.length === 0 || userExist[0].password !== password) {
+        return res
+          .status(400)
+          .render("login", { error: "Invalid credentials!", page: "login" });
+      }
+
+      const token = jwt.sign({ email }, process.env.JWT_SECRET!);
+      res.cookie("mt", token, {
+        httpOnly: true,
+        secure: true,
+        expires: new Date(new Date().getTime() + 1 * 60 * 60 * 1000), // one day
+        signed: true,
+      });
+
+      if (userExist[0].role === "admin") {
+        res.redirect("/admin");
       } else {
-        const userExist = await userService.findUser(email);
-
-        if (userExist.length === 0 || userExist[0].password !== password) {
-          return res
-            .status(400)
-            .render("login", { error: "Invalid credentials!", page: "login" });
-        }
-
-        const token = jwt.sign({ email }, process.env.JWT_SECRET!);
-        res.cookie("mt", token, {
-          httpOnly: true,
-          secure: true,
-          expires: new Date(new Date().getTime() + 1 * 60 * 60 * 1000), // one day
-          signed: true,
-        });
-
-        if (userExist[0].role === "admin") {
-          res.redirect("/admin");
-        } else {
-          res.redirect("/");
-        }
+        res.redirect("/");
       }
     } catch (error) {
       next(error);

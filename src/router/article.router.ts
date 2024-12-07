@@ -10,7 +10,13 @@ articleRouter
   .get(authanticateUser, authorizeUser, pageController.articleCreate)
   .post(authanticateUser, authorizeUser, articleController.create);
 articleRouter
-  .route("/edit")
+  .route("/edit/:slug")
   .get(authanticateUser, authorizeUser, pageController.articleEdit)
   .post(authanticateUser, authorizeUser, articleController.update);
-articleRouter.route("/:slug").get(pageController.article);
+
+articleRouter.route("/delete/:slug");
+
+articleRouter
+  .route("/:slug")
+  .get(pageController.article)
+  .delete(authanticateUser, authorizeUser, articleController.delete);

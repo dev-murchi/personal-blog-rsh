@@ -96,6 +96,10 @@ class UserService {
         throw new CustomError("Could not connected to DB", 500);
       }
 
+      if (!mail.trim()) {
+        return [];
+      }
+
       await this._db.connect();
       const result = await this._db.query<User>({
         text: `SELECT 
@@ -120,6 +124,10 @@ class UserService {
     try {
       if (this._db === null) {
         throw new CustomError("Could not connected to DB", 500);
+      }
+
+      if (!mail.trim()) {
+        return [];
       }
 
       const text = `DELETE FROM ${process.env.DB_TUSER}
@@ -158,9 +166,8 @@ class UserService {
         values: [],
       });
 
-      let count = parseInt(result.data[0].count);
       await this._db.disconnect();
-      return count;
+      return parseInt(result.data[0].count);
     } catch (error) {
       throw error;
     }

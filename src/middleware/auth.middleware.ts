@@ -10,6 +10,9 @@ export async function authanticateUser(
 ) {
   try {
     const token = req.signedCookies["mt"];
+    if (!token) {
+      throw new CustomError("Page not found", 404);
+    }
     const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
 
     const user = await userService.findUser(decoded["email"]);

@@ -1,65 +1,126 @@
 import { NextFunction, Request, Response } from "express";
-import * as articleService from "../service/article.service";
-import { Article } from "../models/article";
-import { CustomError } from "../models/custom-error";
+import { articleService } from "../service/article.service";
+import { ArticleFormError, CustomError } from "../models/custom-error";
 
 class ArticleController {
-  create(req: Request, res: Response, next: NextFunction) {
+  async create(req: Request, res: Response, next: NextFunction) {
     try {
-      const formTitle = "Create Article";
       const { title, content } = req.body;
 
-      const article: Partial<Article> = {
+      if (!content || !content.trim() || !title || !title.trim()) {
+        throw new ArticleFormError(
+          {
+            title,
+            content,
+          },
+          "Please provide both title and content of the article!"
+        );
+      }
+
+      const response = await articleService.save({
         title,
         content,
         author: "Murchi",
-      };
+        slug: "",
+        date: "",
+      });
 
-      const resp = articleService.save(article, "Murchi");
-
-      if (!resp.slug) {
-        return res.status(400).render("article-form", {
-          title: formTitle,
-          article,
-          error: resp.errMsg,
-        });
-      } else {
-        res.redirect("/article/" + resp.slug);
+      if (response.error !== null) {
+        throw new ArticleFormError(
+          {
+            title,
+            content,
+          },
+          response.error
+        );
       }
+
+      res.redirect("/article/" + response.data[0].slug);
     } catch (error) {
+      if (error instanceof ArticleFormError) {
+        return res.status(400).render("article-form", {
+          title: error.article.title,
+          content: error.article.content,
+          error: error.message,
+        });
+      }
       next(error);
     }
   }
 
-  update(req: Request, res: Response, next: NextFunction) {
+  async update(req: Request, res: Response, next: NextFunction) {
     try {
-      const regexOnlyNumber = /^[0-9]+$/;
-      const id = req.query["id"] as string;
+      const { slug } = req.params;
+      const { content } = req.body;
 
-      if (!regexOnlyNumber.test(id)) {
-        throw new CustomError("Article is not foundx!", 404);
+      if (!slug || !slug.trim()) {
+        throw new CustomError("Article is not found!", 404);
       }
 
-      const formTitle = "Edit Article";
-      const { title, content } = req.body;
-
-      const article: Partial<Article> = {
-        title,
-        content,
-      };
-
-      let resp = articleService.update(parseInt(id), article, "Murchi");
-
-      if (!resp.slug) {
-        return res.status(400).render("article-form", {
-          title: formTitle,
-          article,
-          error: resp.errMsg,
-        });
-      } else {
-        res.redirect("/article/" + resp.slug);
+      const oldArticle = await articleService.getArticle(slug);
+      if (oldArticle.length === 0) {
+        throw new CustomError("Article is not found!", 404);
       }
+
+      if (!content || !content.trim()) {
+        throw new ArticleFormError(
+          {
+            title: oldArticle[0].title,
+            content,
+          },
+          "Please provide the content of the article!"
+        );
+      }
+
+      const response = await articleService.update(slug, content);
+
+      if (response.error !== null) {
+        throw new ArticleFormError(
+          {
+            title: oldArticle[0].title,
+            content,
+          },
+          response.error
+        );
+      }
+      res.redirect("/article/" + response.data[0].slug);
     } catch (error) {
+      if (error instanceof ArticleFormError) {
+        return res.status(400).render("article-form", {
+          title: error.article.title,
+          content: error.article.content,
+          error: error.message,
+        });
+      }
+
+      next(error);
+    }
+  }
+  async delete(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { slug } = req.params;
+      console.log({ slug });
+
+      if (!slug || !slug.trim()) {
+        throw new CustomError("Article is not found!", 404);
+      }
+
+      const response = await articleService.delete(slug);
+
+      if (response.length === 0) {
+        throw new CustomError("Article is not found!", 404);
+      }
+
+      res.redirect("/");
+    } catch (error) {
+      if (error instanceof ArticleFormError) {
+        return res.status(400).render("article-form", {
+          title: error.article.title,
+          content: error.article.content,
+          error: error.message,
+        });
+      }
+
       next(error);
     }
   }
