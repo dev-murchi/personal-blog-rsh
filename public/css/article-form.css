@@ -31,7 +31,8 @@ body {
   border-top-right-radius: 8px;
 }
 
-h1 {
+h1,
+h1 a {
   color: #333;
 }
 
@@ -107,4 +108,8 @@ h1 {
   height: 60px;
   margin-top: 2dvh;
   background-color: #22c55e;
+}
+
+a {
+  text-decoration: none;
 }

@@ -24,6 +24,7 @@ export async function authanticateUser(
     (req as any).user = {
       mail: user[0].email,
       role: user[0].role,
+      username: user[0].username,
     };
 
     next();

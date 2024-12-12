@@ -2,15 +2,25 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Personal Blog - Admin</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personal Blog</title>
+  <link rel="stylesheet" href="/css/home.css">
 </head>
 
 <body>
-  <h1>Admin page</h1>
-
+  <div class="container">
+    <header class="header">
+      <nav class="navbar">
+        <h1><a href="/">Personal Blog</a></h1>
+      </nav>
+    </header>
+    <main class="main">
+      <h2>Hi, <%= user %>
+      </h2>
+    </main>
+    <footer class="footer"></footer>
+  </div>
 </body>
 
 </html>
