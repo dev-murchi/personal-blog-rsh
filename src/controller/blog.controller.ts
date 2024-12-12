@@ -113,14 +113,6 @@ class ArticleController {
 
       res.redirect("/");
     } catch (error) {
-      if (error instanceof ArticleFormError) {
-        return res.status(400).render("article-form", {
-          title: error.article.title,
-          content: error.article.content,
-          error: error.message,
-        });
-      }
-
       next(error);
     }
   }
