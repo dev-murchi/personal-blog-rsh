@@ -1,6 +1,6 @@
 import express from "express";
-import { pageController } from "../controller/page.controller";
+import { homePageController } from "../controller/home-page.controller";
 
 export const homePageRouter = express.Router();
 
-homePageRouter.route("/").get(pageController.home);
+homePageRouter.route("/").get(homePageController.displayHomePage);

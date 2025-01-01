@@ -3,20 +3,6 @@ import { articleService } from "../service/article.service";
 import { CustomError } from "../models/custom-error";
 
 class PageController {
-  async home(req: Request, res: Response, next: NextFunction) {
-    try {
-      const articles = (await articleService.getArticles()).map((article) => {
-        return {
-          ...article,
-          date: new Date(article.date).toDateString(),
-        };
-      });
-      res.render("home", { articles });
-    } catch (error) {
-      next(error);
-    }
-  }
-
   async article(req: Request, res: Response, next: NextFunction) {
     try {
       const { slug } = req.params;
