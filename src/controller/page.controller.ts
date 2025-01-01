@@ -20,14 +20,6 @@ class PageController {
     }
   }
 
-  async admin(req: Request, res: Response, next: NextFunction) {
-    try {
-      res.render("admin", { user: (req as any).user.username });
-    } catch (error) {
-      next(error);
-    }
-  }
-
   async articleCreate(req: Request, res: Response, next: NextFunction) {
     try {
       res.render("article-form", {
