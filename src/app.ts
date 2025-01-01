@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { createServer } from "node:https";
 import path from "node:path";
 
-import { indexRouter } from "./router/index.router";
+import { homePageRouter } from "./router/home-page.router";
 import { adminRouter } from "./router/admin.router";
 import { articleRouter } from "./router/article.router";
 import { authRouter } from "./router/auth.router";
@@ -32,7 +32,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.JWT_SECRET));
 
-app.use("/", indexRouter);
+app.use("/", homePageRouter);
 app.use("/admin", adminRouter);
 app.use("/article", articleRouter);
 app.use("/user", authRouter);
