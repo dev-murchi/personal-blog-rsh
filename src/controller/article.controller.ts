@@ -14,7 +14,7 @@ class ArticleController {
         throw new CustomError("Article is not found!", 404);
       }
       article[0].date = new Date(article[0].date).toDateString();
-      res.render("article-detail", { article: article[0], admin: false });
+      res.render("article", { article: article[0], admin: false });
     } catch (error) {
       next(error);
     }
