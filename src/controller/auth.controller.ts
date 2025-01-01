@@ -3,50 +3,6 @@ import { userService } from "../service/user.service";
 import * as jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 export class AuthControler {
-  async registerPage(req: Request, res: Response, next: NextFunction) {
-    try {
-      res.render("login", { error: undefined, page: "register" });
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async register(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { username, password, email } = req.body;
-      if (!username || !password || !email) {
-        return res.status(400).render("login", {
-          error: "Please provide valid credentials!",
-          page: "register",
-        });
-      }
-
-      const userExist = await userService.findUser(email);
-
-      if (userExist.length === 1) {
-        return res.status(400).render("login", {
-          error: "User already registered!",
-          page: "register",
-        });
-      }
-
-      const saltRound = 10;
-      const salt = await bcrypt.genSalt(saltRound);
-      const hash = await bcrypt.hash(password, salt);
-
-      const user = await userService.saveUser({
-        username,
-        email,
-        password: hash,
-        role: "user",
-      });
-
-      res.redirect("/auth/login");
-    } catch (error) {
-      next(error);
-    }
-  }
-
   async loginPage(req: Request, res: Response, next: NextFunction) {
     try {
       res.render("login", { error: undefined, page: "login" });
@@ -77,7 +33,7 @@ export class AuthControler {
         userExist[0].password
       );
 
-      if (!isPasswordValid) {
+      if (!isPasswordValid || userExist[0].role !== "admin") {
         return res
           .status(400)
           .render("login", { error: "Invalid credentials!", page: "login" });
