@@ -3,6 +3,58 @@ import { articleService } from "../service/article.service";
 import { ArticleFormError, CustomError } from "../models/custom-error";
 
 class ArticleController {
+  async displayArticle(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { slug } = req.params;
+      if (!slug) {
+        throw new CustomError("Article is not found!", 404);
+      }
+      const article = await articleService.getArticle(slug);
+      if (article.length === 0) {
+        throw new CustomError("Article is not found!", 404);
+      }
+      article[0].date = new Date(article[0].date).toDateString();
+      res.render("article-detail", { article: article[0], admin: false });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async displayCreatePage(req: Request, res: Response, next: NextFunction) {
+    try {
+      res.render("article-form", {
+        title: undefined,
+        content: undefined,
+        error: undefined,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async displayEditPage(req: Request, res: Response, next: NextFunction) {
+    const { slug } = req.params;
+    try {
+      if (!slug || !slug.trim()) {
+        throw new CustomError("Article is not found!", 404);
+      }
+
+      const article = await articleService.getArticle(slug);
+
+      if (article.length === 0) {
+        throw new CustomError("Article is not found!", 404);
+      }
+
+      res.render("article-form", {
+        title: article[0].title,
+        content: article[0].content,
+        error: undefined,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async create(req: Request, res: Response, next: NextFunction) {
     try {
       const { title, content } = req.body;
@@ -96,6 +148,7 @@ class ArticleController {
       next(error);
     }
   }
+
   async delete(req: Request, res: Response, next: NextFunction) {
     try {
       const { slug } = req.params;
