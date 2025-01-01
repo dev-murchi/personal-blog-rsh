@@ -54,8 +54,8 @@ class UserService {
           user.email,
           user.password,
           user.role,
-          user.createdAt,
-          user.updatedAt,
+          new Date().toString(),
+          new Date().toString(),
         ],
       });
       await this._db.disconnect();

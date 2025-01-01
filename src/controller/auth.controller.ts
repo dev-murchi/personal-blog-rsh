@@ -39,8 +39,6 @@ export class AuthControler {
         email,
         password: hash,
         role: "user",
-        createdAt: new Date().toString(),
-        updatedAt: new Date().toString(),
       });
 
       res.redirect("/auth/login");
@@ -101,6 +99,14 @@ export class AuthControler {
     } catch (error) {
       next(error);
     }
+  }
+
+  async logout(req: Request, res: Response, next: NextFunction) {
+    res.cookie("mt", "logout", {
+      httpOnly: true,
+      expires: new Date(Date.now()),
+    });
+    return res.redirect("/");
   }
 }
 
