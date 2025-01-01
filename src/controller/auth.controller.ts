@@ -1,7 +1,16 @@
 import { NextFunction, Request, Response } from "express";
 import { userService } from "../service/user.service";
 import * as jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 export class AuthControler {
+  async registerPage(req: Request, res: Response, next: NextFunction) {
+    try {
+      res.render("login", { error: undefined, page: "register" });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async register(req: Request, res: Response, next: NextFunction) {
     try {
       const { username, password, email } = req.body;
@@ -21,18 +30,28 @@ export class AuthControler {
         });
       }
 
-      const userCount = await userService.countUsers();
-      const role = userCount === 0 ? "admin" : "user";
+      const saltRound = 10;
+      const salt = await bcrypt.genSalt(saltRound);
+      const hash = await bcrypt.hash(password, salt);
+
       const user = await userService.saveUser({
         username,
         email,
-        password,
-        role,
+        password: hash,
+        role: "user",
         createdAt: new Date().toString(),
         updatedAt: new Date().toString(),
       });
 
-      res.redirect("/user/login");
+      res.redirect("/auth/login");
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async loginPage(req: Request, res: Response, next: NextFunction) {
+    try {
+      res.render("login", { error: undefined, page: "login" });
     } catch (error) {
       next(error);
     }
@@ -49,7 +68,18 @@ export class AuthControler {
       }
       const userExist = await userService.findUser(email);
 
-      if (userExist.length === 0 || userExist[0].password !== password) {
+      if (userExist.length === 0) {
+        return res
+          .status(400)
+          .render("login", { error: "Invalid credentials!", page: "login" });
+      }
+
+      const isPasswordValid = await bcrypt.compare(
+        password,
+        userExist[0].password
+      );
+
+      if (!isPasswordValid) {
         return res
           .status(400)
           .render("login", { error: "Invalid credentials!", page: "login" });

@@ -33,9 +33,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.JWT_SECRET));
 
 app.use("/", homePageRouter);
+app.use("/auth", authRouter);
 app.use("/admin", adminRouter);
 app.use("/article", articleRouter);
-app.use("/user", authRouter);
 
 app.use(notFound);
 app.use(errorHandler);

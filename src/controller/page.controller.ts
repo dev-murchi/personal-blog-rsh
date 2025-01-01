@@ -28,22 +28,6 @@ class PageController {
     }
   }
 
-  async login(req: Request, res: Response, next: NextFunction) {
-    try {
-      res.render("login", { error: undefined, page: "login" });
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async register(req: Request, res: Response, next: NextFunction) {
-    try {
-      res.render("login", { error: undefined, page: "register" });
-    } catch (error) {
-      next(error);
-    }
-  }
-
   async articleCreate(req: Request, res: Response, next: NextFunction) {
     try {
       res.render("article-form", {

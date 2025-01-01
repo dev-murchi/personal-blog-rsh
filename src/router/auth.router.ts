@@ -1,12 +1,15 @@
 import express from "express";
 
-import { pageController } from "../controller/page.controller";
 import { authControler } from "../controller/auth.controller";
 
 export const authRouter = express.Router();
 
-authRouter.route("/login").get(pageController.login).post(authControler.login);
 authRouter
   .route("/register")
-  .get(pageController.register)
+  .get(authControler.registerPage)
   .post(authControler.register);
+
+authRouter
+  .route("/login")
+  .get(authControler.loginPage)
+  .post(authControler.login);
